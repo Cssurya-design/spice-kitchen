@@ -54,7 +54,7 @@ export default function Settings() {
       if (payload.free_delivery_above === '') payload.free_delivery_above = 0
       if (payload.gst_percentage === '') payload.gst_percentage = 0
 
-      await api.patch(`settings/${settings.id}/`, payload)
+      await api.patch(`settings?id=${settings.id}`, payload)
       toast.success('Settings saved!')
       fetchGlobalSettings()
     } catch (error) {

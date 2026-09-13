@@ -1,8 +1,24 @@
 {
   "rewrites": [
     {
+      "source": "/api/users/upload_avatar",
+      "destination": "/api/api-form"
+    },
+    {
+      "source": "/api/categories",
+      "destination": "/api/api-form"
+    },
+    {
+      "source": "/api/food-items",
+      "destination": "/api/api-form"
+    },
+    {
+      "source": "/api/settings",
+      "destination": "/api/api-form"
+    },
+    {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/api/api-json"
     },
     {
       "source": "/(.*)",

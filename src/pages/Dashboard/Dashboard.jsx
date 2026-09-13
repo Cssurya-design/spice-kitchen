@@ -58,7 +58,7 @@ export default function Dashboard() {
         updates.payment_status = true
       }
       
-      await api.patch(`orders/${orderId}/`, updates)
+      await api.patch(`orders?id=${orderId}`, updates)
       setRecentOrders(prev => prev.map(o => o.id === orderId ? { ...o, ...updates } : o))
       
       // We should ideally fetchDashboardData() here to update stats, but for responsiveness we just let it be or call it.

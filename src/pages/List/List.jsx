@@ -24,7 +24,7 @@ const List = () => {
     if (!confirm('Are you sure you want to delete this item?')) return
 
     try {
-      await api.delete(`food-items/${foodId}/`)
+      await api.delete(`food-items?id=${foodId}`)
       setList(prev => prev.filter(item => item.id !== foodId))
       toast.success('Item removed!')
     } catch (error) {
@@ -34,7 +34,7 @@ const List = () => {
 
   const toggleAvailability = async (item) => {
     try {
-      await api.patch(`food-items/${item.id}/`, { is_available: !item.is_available })
+      await api.patch(`food-items?id=${item.id}`, { is_available: !item.is_available })
       setList(prev =>
         prev.map(i => i.id === item.id ? { ...i, is_available: !i.is_available } : i)
       )

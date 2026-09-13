@@ -128,7 +128,7 @@ export default function Checkout() {
           pincode: address.pincode,
         }
 
-        await api.patch(`users/${user.id}/`, {
+        await api.patch(`users/update`, {
           profile: { saved_addresses: [newAddr] }
         })
       }

@@ -29,7 +29,7 @@ export default function Offers() {
         formData.append('image', image)
       }
 
-      const { data } = await api.post('users/send_offer/', formData, {
+      const { data } = await api.post('users/send_offer', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       toast.success(data.message || 'Offers sent successfully!')

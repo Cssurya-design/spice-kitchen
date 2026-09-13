@@ -26,7 +26,7 @@ const Orders = () => {
     }
 
     try {
-      await api.patch(`orders/${orderId}/`, updates)
+      await api.patch(`orders?id=${orderId}`, updates)
 
       setOrders(prev =>
         prev.map(o => o.id === orderId ? { ...o, ...updates } : o)
