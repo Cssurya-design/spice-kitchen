@@ -13,7 +13,7 @@ export function SettingsProvider({ children }) {
 
   const fetchSettings = async () => {
     try {
-      const { data } = await api.get('settings/')
+      const { data } = await api.get('settings')
       if (data && data.length > 0) {
         setSettings(data[0])
       }

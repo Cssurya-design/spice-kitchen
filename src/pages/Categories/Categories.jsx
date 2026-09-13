@@ -19,7 +19,7 @@ export default function Categories() {
 
   async function fetchCategories() {
     try {
-      const { data } = await api.get('categories/')
+      const { data } = await api.get('categories')
       setCategories(data || [])
     } catch (error) {
       toast.error('Failed to load categories')
@@ -42,7 +42,7 @@ export default function Categories() {
 
     setAdding(true)
     try {
-      await api.post('categories/', { name: form.name.trim() })
+      await api.post('categories', { name: form.name.trim() })
 
       toast.success('Category added successfully')
       setForm({ name: '' })
@@ -60,7 +60,7 @@ export default function Categories() {
     }
 
     try {
-      await api.delete(`categories/${id}/`)
+      await api.delete(`categories?id=${id}`)
       
       toast.success('Category deleted')
       setCategories(categories.filter(c => c.id !== id))

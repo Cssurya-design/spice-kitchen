@@ -17,11 +17,11 @@ export default function Settings() {
 
   async function fetchSettings() {
     try {
-      const { data } = await api.get('settings/')
+      const { data } = await api.get('settings')
       if (data && data.length > 0) {
         setSettings(data[0])
       } else {
-        const { data: newData } = await api.post('settings/', {})
+        const { data: newData } = await api.post('settings', {})
         setSettings(newData)
       }
     } catch (error) {

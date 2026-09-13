@@ -28,12 +28,12 @@ const Add = () => {
 
   async function fetchCategoriesAndItem() {
     try {
-      const { data: cats } = await api.get('categories/')
+      const { data: cats } = await api.get('categories')
       setCategories(cats || [])
       
       if (id) {
         // Fetch item for editing
-        const { data: item } = await api.get(`food-items/${id}/`)
+        const { data: item } = await api.get(`food-items?id=${id}`)
         setData({
           name: item.name,
           description: item.description,
@@ -93,13 +93,13 @@ const Add = () => {
       }
 
       if (isEditing) {
-        await api.patch(`food-items/${id}/`, formData, {
+        await api.patch(`food-items?id=${id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
         toast.success('Food item updated successfully!')
         navigate('/admin/list')
       } else {
-        await api.post('food-items/', formData, {
+        await api.post('food-items', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
         toast.success('Food item added successfully!')

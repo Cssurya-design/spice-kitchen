@@ -25,7 +25,7 @@ export default function Menu() {
 
   async function fetchCategories() {
     try {
-      const { data } = await api.get('categories/')
+      const { data } = await api.get('categories')
       setCategories(data || [])
     } catch (err) {
       console.error(err)
@@ -35,7 +35,7 @@ export default function Menu() {
   async function fetchItems() {
     setLoading(true)
     try {
-      const { data } = await api.get('food-items/')
+      const { data } = await api.get('food-items')
       let filtered = data.filter(item => item.is_available)
 
       if (activeCategory !== 'All') {

@@ -116,7 +116,7 @@ export default function Checkout() {
         status: 'Food Processing',
       }
 
-      const { data } = await api.post('orders/', orderData)
+      const { data } = await api.post('orders', orderData)
 
       // Save address to profile
       if (profile) {

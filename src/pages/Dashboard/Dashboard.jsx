@@ -27,8 +27,8 @@ export default function Dashboard() {
       today.setHours(0, 0, 0, 0)
 
       const [allOrders, foodItems] = await Promise.all([
-        api.get('orders/'),
-        api.get('food-items/'),
+        api.get('orders'),
+        api.get('food-items'),
       ])
 
       const orders = allOrders.data || []

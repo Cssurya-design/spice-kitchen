@@ -16,8 +16,8 @@ export default function Users() {
   async function fetchData() {
     try {
       const [usersRes, ordersRes] = await Promise.all([
-        api.get('users/'),
-        api.get('orders/')
+        api.get('users'),
+        api.get('orders')
       ])
       
       setUsers(usersRes.data || [])

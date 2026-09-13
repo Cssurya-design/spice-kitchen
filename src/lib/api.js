@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.DEV ? 'http://127.0.0.1:8000/api/' : 'https://spicekitchenrestaurantsbackend.pythonanywhere.com/api/')
+const API_URL = '/api/';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -27,8 +26,7 @@ api.interceptors.response.use(
         if (!refresh) {
           throw new Error('No refresh token')
         }
-        
-        const response = await axios.post(`${API_URL}token/refresh/`, { refresh })
+        const response = await axios.post(`${API_URL}auth/refresh`, { refresh })
         const { access } = response.data
         
         localStorage.setItem('access_token', access)

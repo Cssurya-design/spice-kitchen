@@ -11,7 +11,7 @@ const List = () => {
 
   const fetchList = async () => {
     try {
-      const { data } = await api.get('food-items/')
+      const { data } = await api.get('food-items')
       setList(data || [])
     } catch (error) {
       console.error('Error fetching food list:', error)

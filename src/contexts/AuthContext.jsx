@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
         setUser(JSON.parse(storedUser))
         try {
           // Verify token is still valid
-          const { data } = await api.get('users/me/')
+          const { data } = await api.get('auth/me')
           setUser(data)
           localStorage.setItem('user', JSON.stringify(data))
         } catch (error) {
@@ -33,19 +33,19 @@ export function AuthProvider({ children }) {
   }, [])
 
   const signIn = async (email, password) => {
-    const { data } = await api.post('token/', { username: email, password })
+    const { data } = await api.post('auth/login', { username: email, password })
     localStorage.setItem('access_token', data.access)
     localStorage.setItem('refresh_token', data.refresh)
     
     // Fetch user details
-    const userRes = await api.get('users/me/')
+    const userRes = await api.get('auth/me')
     setUser(userRes.data)
     localStorage.setItem('user', JSON.stringify(userRes.data))
     return userRes.data
   }
 
   const signUp = async (email, password, firstName, lastName, phone) => {
-    const { data } = await api.post('users/register/', {
+    const { data } = await api.post('auth/register', {
       email,
       password,
       first_name: firstName,
@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
       if (data.saved_addresses !== undefined) payload.profile.saved_addresses = data.saved_addresses
     }
     
-    const res = await api.patch(`users/${userId}/`, payload)
+    const res = await api.patch(`users/update`, payload)
     setUser(res.data)
     localStorage.setItem('user', JSON.stringify(res.data))
     return res.data
@@ -87,12 +87,12 @@ export function AuthProvider({ children }) {
   const uploadAvatar = async (file) => {
     const formData = new FormData()
     formData.append('avatar', file)
-    const res = await api.post('users/upload_avatar/', formData, {
+    const res = await api.post('users/upload_avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     
     // Refresh user profile
-    const userRes = await api.get('users/me/')
+    const userRes = await api.get('auth/me')
     setUser(userRes.data)
     localStorage.setItem('user', JSON.stringify(userRes.data))
     return res.data
@@ -100,11 +100,11 @@ export function AuthProvider({ children }) {
 
   const signInWithGoogle = async (credential) => {
     try {
-      const { data } = await api.post('auth/google/', { token: credential })
+      const { data } = await api.post('auth/google', { token: credential })
       localStorage.setItem('access_token', data.access)
       localStorage.setItem('refresh_token', data.refresh)
       
-      const { data: profileData } = await api.get('users/me/')
+      const { data: profileData } = await api.get('auth/me')
       setUser(profileData)
       localStorage.setItem('user', JSON.stringify(profileData))
     } catch (error) {

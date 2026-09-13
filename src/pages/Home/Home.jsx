@@ -45,9 +45,9 @@ export default function Home() {
   async function fetchData() {
     try {
       const [catRes, foodRes, reviewRes] = await Promise.all([
-        api.get('categories/'),
-        api.get('food-items/'),
-        api.get('reviews/')
+        api.get('categories'),
+        api.get('food-items'),
+        api.get('reviews')
       ])
 
       setCategories(catRes.data || [])
@@ -83,7 +83,7 @@ export default function Home() {
 
     setSubmittingReview(true)
     try {
-      const { data } = await api.post('reviews/', {
+      const { data } = await api.post('reviews', {
         rating: reviewForm.rating,
         comment: reviewForm.comment,
         // food_item is omitted for general website review

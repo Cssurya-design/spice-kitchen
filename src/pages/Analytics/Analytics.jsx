@@ -21,8 +21,8 @@ export default function Analytics() {
   async function fetchData() {
     try {
       const [ordersRes, usersRes] = await Promise.all([
-        api.get('orders/'),
-        api.get('users/')
+        api.get('orders'),
+        api.get('users')
       ])
       
       setOrders(ordersRes.data || [])
