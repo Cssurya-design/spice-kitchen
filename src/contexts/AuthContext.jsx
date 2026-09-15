@@ -18,12 +18,12 @@ export function AuthProvider({ children }) {
           setUser(data)
           localStorage.setItem('user', JSON.stringify(data))
         } catch (error) {
-          console.error("Token verification failed", error)
+      console.error("Token verification failed", error)
           // Only sign out if it's explicitly a 401 Unauthorized (and refresh failed).
           // Do not sign out on network errors or 500s.
           if (error.response && error.response.status === 401) {
             signOut()
-          }
+    }
         }
       }
       setLoading(false)
@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
     return data
   }
 
-  const signOut = async () => {
+  async function signOut() {
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
     localStorage.removeItem('user')

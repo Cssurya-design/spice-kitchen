@@ -94,8 +94,8 @@ export default function Header() {
         }
         await updateProfile({ saved_addresses: newAddresses })
       } catch (error) {
-        console.error('Failed to sync location to profile', error)
-      }
+      console.error('Failed to sync location to profile', error)
+    }
     }
   }
 

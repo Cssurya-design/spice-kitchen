@@ -81,9 +81,9 @@ export async function reverseGeocode(lat, lng) {
       lng,
     }
   } catch (error) {
-    console.error('Reverse geocoding error:', error)
+      console.error('Reverse geocoding error:', error)
     throw error
-  }
+    }
 }
 
 /**

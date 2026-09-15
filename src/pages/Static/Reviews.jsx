@@ -14,8 +14,8 @@ export default function Reviews() {
         const { data } = await api.get('reviews')
         setReviews(data || [])
       } catch (error) {
-        console.error('Error fetching reviews:', error)
-      } finally {
+      console.error('Error fetching reviews:', error)
+    } finally {
         setLoading(false)
       }
     }
