@@ -1,7 +1,16 @@
 import { client } from '../lib/db.js';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_change_me_in_production';
+const GOOGLE_CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+const oAuth2Client = new OAuth2Client(
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  'postmessage'
+);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
@@ -10,13 +19,20 @@ export default async function handler(req, res) {
   if (!token) return res.status(400).json({ error: 'Token required' });
 
   try {
-    // Decode the token (in production we should verify it with google-auth-library)
-    const decoded = jwt.decode(token);
-    if (!decoded || !decoded.email) {
+    const { tokens } = await oAuth2Client.getToken(token);
+    const idToken = tokens.id_token;
+    
+    const ticket = await oAuth2Client.verifyIdToken({
+        idToken: idToken,
+        audience: GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email) {
       return res.status(400).json({ error: 'Invalid Google token' });
     }
 
-    const { email, given_name, family_name, picture } = decoded;
+    const { email, given_name, family_name, picture } = payload;
 
     // Check if user exists
     let rs = await client.execute({

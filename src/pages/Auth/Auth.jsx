@@ -104,10 +104,11 @@ export default function Auth() {
   }
 
   const handleGoogleSignIn = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+    flow: 'auth-code',
+    onSuccess: async (codeResponse) => {
       try {
-        if (tokenResponse.access_token) {
-          await signInWithGoogle(tokenResponse.access_token)
+        if (codeResponse.code) {
+          await signInWithGoogle(codeResponse.code)
           justAuthed.current = true
           toast.success('Google Login Successful!')
         }

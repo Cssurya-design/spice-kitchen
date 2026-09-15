@@ -1,59 +1,52 @@
 /* eslint-env node */
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@libsql/client'
+import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
+import 'dotenv/config'
 
-const supabaseAdmin = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_SECRET_KEY
-)
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN
+})
 
 async function createAdmin() {
   const email = 'admin@spicekitchen.com'
   const password = 'AdminPassword123!'
 
-  console.log('Creating admin user...')
+  console.log('Creating/Updating admin user in Turso...')
 
-  const { data, error } = await supabaseAdmin.auth.admin.createUser({
-    email: email,
-    password: password,
-    email_confirm: true
-  })
+  try {
+    const existing = await client.execute({
+      sql: 'SELECT id FROM users WHERE email = ?',
+      args: [email]
+    })
 
-  if (error) {
-    if (error.message.includes('already exists')) {
-      console.log('Admin user already exists. Updating role...')
-      const { data: users } = await supabaseAdmin.auth.admin.listUsers()
-      const existingUser = users.users.find(u => u.email === email)
-      
-      if (existingUser) {
-        await supabaseAdmin
-          .from('profiles')
-          .update({ role: 'admin', full_name: 'Hotel Admin' })
-          .eq('id', existingUser.id)
-        console.log('Successfully set existing user as admin!')
-        console.log(`Email: ${email}\nPassword: ${password}`)
-      }
+    if (existing.rows.length > 0) {
+      console.log('Admin user exists. Updating role to admin...')
+      await client.execute({
+        sql: 'UPDATE users SET role = ? WHERE email = ?',
+        args: ['admin', email]
+      })
+      console.log('Successfully set existing user as admin!')
+      console.log(`Email: ${email}\nPassword: ${password}`)
       return
     }
-    console.error('Error creating user:', error.message)
-    return
-  }
 
-  console.log('User created:', data.user.id)
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+    const id = crypto.randomUUID()
 
-  // Wait a few seconds for the trigger to create the profile
-  await new Promise(resolve => setTimeout(resolve, 2000))
+    await client.execute({
+      sql: `INSERT INTO users (id, email, password_hash, first_name, last_name, role)
+            VALUES (?, ?, ?, ?, ?, 'admin')`,
+      args: [id, email, hash, 'Hotel', 'Admin']
+    })
 
-  // Update role to admin
-  const { error: profileError } = await supabaseAdmin
-    .from('profiles')
-    .update({ role: 'admin', full_name: 'Hotel Admin' })
-    .eq('id', data.user.id)
-
-  if (profileError) {
-    console.error('Error updating profile to admin:', profileError.message)
-  } else {
+    console.log('User created:', id)
     console.log('Successfully set user as admin!')
     console.log(`Email: ${email}\nPassword: ${password}`)
+  } catch (error) {
+    console.error('Error creating user:', error.message)
   }
 }
 
